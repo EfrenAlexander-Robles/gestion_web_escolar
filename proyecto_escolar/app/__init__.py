@@ -20,21 +20,34 @@ def create_app():
     
     with app.app_context():
         # Import all models so SQLAlchemy create_all() sees every table metadata
-        from app.models.alumno import Alumno
+        from app.models.usuario import Usuario
+        from app.models.turno import Turno
         from app.models.grupo import Grupo
         from app.models.materia import Materia
+        from app.models.docente import Docente
+        from app.models.alumno import Alumno
         from app.models.planeacion import Planeacion
         from app.models.calificacion import Calificacion
-        from app.models.turno import Turno
-        from app.models.docente import Docente
-        from app.models.usuario import Usuario
 
-        from app.routes.test import bp as test_bp
-        from app.routes.usuarios import bp as usuarios_bp
+        # Import and register blueprints
+        from app.routes.auth import bp as auth_bp
+        from app.routes.dashboard import bp as dashboard_bp
+        from app.routes.alumnos import bp as alumnos_bp
+        from app.routes.grupos import bp as grupos_bp
+        from app.routes.materias import bp as materias_bp
+        from app.routes.docentes import bp as docentes_bp
         from app.routes.calificaciones import bp as calificaciones_bp
-        app.register_blueprint(test_bp)
-        app.register_blueprint(usuarios_bp)
+        from app.routes.test import bp as test_bp
+        
+        app.register_blueprint(auth_bp)
+        app.register_blueprint(dashboard_bp)
+        app.register_blueprint(alumnos_bp)
+        app.register_blueprint(grupos_bp)
+        app.register_blueprint(materias_bp)
+        app.register_blueprint(docentes_bp)
         app.register_blueprint(calificaciones_bp)
+        app.register_blueprint(test_bp)
+        
         db.create_all()
     
     return app

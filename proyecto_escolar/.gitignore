@@ -1,0 +1,104 @@
+# Gitignore para Sistema Escolar
+
+# Entorno Virtual
+.venv/
+venv/
+ENV/
+env/
+
+# Variables de entorno
+.env
+.env.local
+.env.*.local
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.VS*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+PIPFILE.lock
+
+# Base de datos
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# Caché
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Secretos
+.secret_key
+.env
+config.local.py
+
+# Archivos temporales
+*.tmp
+*.bak
+.temp/
+
+# Node (si se usa en el frontend)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Archivos compilados
+*.class
+*.o
+*.so
+
+# Archivos de prueba
+.tox/
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+
+# Archivos del proyecto
+.project
+.pydevproject
+.settings/
+
+# Mac OS
+.AppleDouble
+.LSOverride
+
+# Windows
+Desktop.ini
+$RECYCLE.BIN/

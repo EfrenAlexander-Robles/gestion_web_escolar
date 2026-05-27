@@ -1,30 +1,27 @@
-from flask import Blueprint
+from flask import Blueprint, render_template, jsonify
+from app import db
 from app.models.usuario import Usuario
 
-bp = Blueprint('test', __name__)
+bp = Blueprint('test', __name__, url_prefix='/test')
 
-
-@bp.route('/test')
-def test_route():
+@bp.route('/')
+def test():
+    """Ruta de prueba para verificar la conexión a la base de datos"""
     try:
-        total_usuarios = Usuario.query.count()
         usuarios = Usuario.query.all()
-        primer_usuario = Usuario.query.first()
-
-        nombres = [usuario.nombre for usuario in usuarios if usuario.nombre]
-        nombres_texto = ', '.join(nombres) if nombres else 'No hay nombres disponibles.'
-        primer = primer_usuario.nombre if primer_usuario else 'No hay usuarios.'
-
-        return (
-            f"<h1>Ruta de prueba</h1>"
-            f"<p>Mensaje: La consulta se ejecutó correctamente.</p>"
-            f"<p>Cantidad de registros en usuarios: {total_usuarios}</p>"
-            f"<p>Primer usuario: {primer}</p>"
-            f"<p>Nombres encontrados: {nombres_texto}</p>"
-        )
-    except Exception as error:
-        return (
-            f"<h1>Error en la ruta de prueba</h1>"
-            f"<p>No se pudo leer la tabla usuarios.</p>"
-            f"<p>Detalle: {error}</p>"
-        )
+        total = len(usuarios)
+        primer_usuario = usuarios[0] if usuarios else None
+        nombres = [u.nombre for u in usuarios]
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'Conexión a base de datos exitosa',
+            'total_usuarios': total,
+            'primer_usuario': primer_usuario.to_dict() if primer_usuario else None,
+            'todos_los_nombres': nombres
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500

@@ -1,217 +1,284 @@
-# Sistema Web Escolar - Version Alfa
+# Sistema Web Escolar - Gestión Académica
 
-Este proyecto es la base de un sistema web escolar desarrollado con Flask y SQLAlchemy. Su objetivo final es apoyar tareas de control academico como la gestion de usuarios, grupos, materias, docentes, planeaciones y registros administrativos.
+## Descripción
 
-En el estado actual, el proyecto funciona como una version alfa enfocada en validar la estructura inicial de la aplicacion, la configuracion de Flask, la conexion con MySQL y una ruta de prueba que consulta la tabla `usuarios`.
+Sistema web integral para la gestión académica de instituciones educativas. Permite administrar:
 
-## Estado actual
+- **Alumnos**: Registro, edición y gestión de estudiantes
+- **Grupos**: Creación y administración de grupos por semestre y turno
+- **Materias**: Catálogo de materias con créditos y horas
+- **Docentes**: Registro de maestros y sus especialidades
+- **Calificaciones**: Sistema de evaluación con tipos (parcial, final, tarea, participación)
+- **Reportes**: Reportes por alumno y por grupo
+- **Autenticación**: Sistema de login seguro con roles
 
-La aplicacion ya cuenta con:
+## Tecnologías
 
-- Fabrica de aplicacion en Flask mediante `create_app()`.
-- Configuracion centralizada en `config.py`.
-- Conexion a base de datos con Flask-SQLAlchemy y PyMySQL.
-- Modelo inicial `Usuario`.
-- Ruta `/test` para comprobar consultas a la tabla `usuarios`.
-- Script SQL base en `database/schema.sql` para crear la estructura de la base de datos.
-- Archivos reservados para futuros modelos y rutas de alumnos, grupos, materias y planeacion.
-
-Algunos modulos aun estan en preparacion. Los archivos de rutas y modelos como `alumnos.py`, `grupos.py`, `materias.py` y `planeacion.py` existen como parte de la estructura del proyecto, pero todavia no contienen logica funcional.
-
-## Tecnologias
-
-- Python
-- Flask
-- Flask-SQLAlchemy
-- PyMySQL
-- MySQL o MariaDB
+- **Backend**: Flask 3.0.0
+- **ORM**: SQLAlchemy 2.0.23
+- **Base de Datos**: MySQL 8.0+
+- **Frontend**: HTML5, CSS3, Bootstrap 5.3.0
+- **Autenticación**: Werkzeug (Hash de contraseñas)
 
 ## Requisitos
 
-- Python 3.11 o superior
-- MySQL/MariaDB, o acceso a una base de datos MySQL compatible
-- `pip` para instalar dependencias
-- Entorno virtual recomendado
+- Python 3.8+
+- MySQL 8.0+
+- pip (gestor de paquetes de Python)
 
-## Instalacion
+## Instalación
 
-### 1. Entrar al proyecto
+### 1. Clonar el repositorio
 
 ```bash
-cd proyecto_escolar
+git clone https://github.com/EfrenAlexander-Robles/gestion_web_escolar.git
+cd gestion_web_escolar/proyecto_escolar
 ```
 
-### 2. Crear un entorno virtual
+### 2. Crear entorno virtual
 
 ```bash
+# Windows
 python -m venv .venv
-```
+.venv\Scripts\activate
 
-### 3. Activar el entorno virtual
-
-En Windows:
-
-```bash
-.\.venv\Scripts\activate
-```
-
-En macOS/Linux:
-
-```bash
+# macOS/Linux
+python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-### 4. Instalar dependencias
+### 3. Instalar dependencias
 
 ```bash
 pip install -r requeriments.txt
 ```
 
-> Nota: el archivo de dependencias se llama `requeriments.txt` en este proyecto.
+### 4. Configurar base de datos
 
-## Configuracion
-
-La configuracion principal esta en `config.py`, dentro de la clase `Configuracion`.
-
-La aplicacion usa estas variables:
-
-- `SECRET_KEY`: clave secreta de Flask. Si no existe, se genera automaticamente con `create_key.py` y se guarda en `.secret_key`.
-- `DATABASE_URL`: cadena de conexion a MySQL. Si no se define, se usa la URL configurada por defecto en `config.py`.
-
-Ejemplo de conexion local:
+#### Opción A: Base de datos local
 
 ```bash
-set DATABASE_URL=mysql+pymysql://usuario:password@localhost:3306/control_escolar
-```
-
-En PowerShell:
-
-```powershell
+# En Windows (PowerShell)
 $env:DATABASE_URL="mysql+pymysql://usuario:password@localhost:3306/control_escolar"
+
+# En Linux/macOS
+export DATABASE_URL="mysql+pymysql://usuario:password@localhost:3306/control_escolar"
 ```
 
-## Base de datos
+#### Opción B: Usar archivo .env
 
-El archivo `database/schema.sql` contiene una propuesta de estructura para el sistema escolar, incluyendo tablas como:
+Copia `.env.example` a `.env` y actualiza los valores:
 
-- `usuarios`
-- `turnos`
-- `grupos`
-- `materias`
-- `docentes`
-- `planeaciones`
-- `logs_login`
-- `audit_logs`
+```bash
+cp .env.example .env
+```
 
-Para cargar el script en MySQL:
+Edita `.env`:
+
+```
+DATABASE_URL=mysql+pymysql://usuario:password@localhost:3306/control_escolar
+FLASK_ENV=development
+FLASK_DEBUG=True
+SECRET_KEY=tu-clave-secreta
+```
+
+### 5. Crear base de datos
 
 ```bash
 mysql -u root -p < database/schema.sql
 ```
 
-Tambien debe considerarse que, al iniciar la aplicacion, Flask-SQLAlchemy ejecuta `db.create_all()` dentro de `app/__init__.py`. Esto crea las tablas definidas por los modelos disponibles en Python. Actualmente, el modelo implementado es `Usuario`.
-
-## Ejecucion
-
-Para iniciar el servidor de desarrollo:
+### 6. Ejecutar la aplicación
 
 ```bash
 python run.py
 ```
 
-La aplicacion se ejecuta en:
+La aplicación estará disponible en: **http://127.0.0.1:5000**
 
-```text
-http://127.0.0.1:5000
+## Uso
+
+### Acceso Inicial
+
+**Email:** `admin@school.local`  
+**Contraseña:** Debe ser actualizada en la base de datos
+
+Para cambiar la contraseña del admin, ejecuta en MySQL:
+
+```sql
+UPDATE usuarios SET password = 'tu-nueva-contraseña' WHERE email = 'admin@school.local';
 ```
 
-## Ruta disponible
+### Roles
 
-### `/test`
+- **Admin**: Acceso completo al sistema
+- **Docente**: Gestionar calificaciones y ver reportes
+- **Control Escolar**: Gestionar alumnos, grupos y materias
 
-Ruta de prueba que consulta la tabla `usuarios` usando el modelo `Usuario`.
+## Estructura del Proyecto
 
-Muestra:
-
-- Si la consulta se ejecuto correctamente.
-- La cantidad de registros encontrados.
-- El primer usuario registrado.
-- Una lista de nombres disponibles.
-
-Esta ruta sirve para comprobar que Flask, SQLAlchemy y la base de datos estan comunicandose correctamente.
-
-## Estructura del proyecto
-
-```text
+```
 proyecto_escolar/
-+-- app/
-|   +-- models/
-|   |   +-- alumno.py
-|   |   +-- grupo.py
-|   |   +-- materia.py
-|   |   +-- planeacion.py
-|   |   +-- usuario.py
-|   +-- routes/
-|   |   +-- alumnos.py
-|   |   +-- grupos.py
-|   |   +-- materias.py
-|   |   +-- planeacion.py
-|   |   +-- test.py
-|   +-- __init__.py
-+-- database/
-|   +-- schema.sql
-+-- .secret_key
-+-- config.py
-+-- create_key.py
-+-- requeriments.txt
-+-- run.py
-+-- README.md
+├── app/
+│   ├── models/              # Modelos de datos
+│   │   ├── usuario.py
+│   │   ├__ alumno.py
+│   │   ├── grupo.py
+│   │   ├── materia.py
+│   │   ├── docente.py
+│   │   ├── planeacion.py
+│   │   ├── calificacion.py
+│   │   ├── turno.py
+│   │   ├└─ __init__.py
+│   ├── routes/              # Rutas y vistas
+│   │   ├── auth.py
+│   │   ├── dashboard.py
+│   │   ├── alumnos.py
+│   │   ├── grupos.py
+│   │   ├── materias.py
+│   │   ├── docentes.py
+│   │   ├── calificaciones.py
+│   │   ├└─ test.py
+│   ├── templates/           # Plantillas HTML
+│   │   ├── base.html
+│   │   ├── auth/
+│   │   ├── dashboard/
+│   │   ├── alumnos/
+│   │   ├── grupos/
+│   │   ├── materias/
+│   │   ├── docentes/
+│   │   ├└─ calificaciones/
+│   └─ __init__.py
+├── database/
+│   └─ schema.sql             # Script de base de datos
+├── .env.example
+├── .gitignore
+├── config.py
+├── create_key.py
+├── requeriments.txt
+├── run.py
+├└─ README.md
 ```
 
-## Archivos principales
+## Características Principales
 
-- `run.py`: punto de entrada de la aplicacion.
-- `app/__init__.py`: crea la aplicacion Flask, inicializa la base de datos y registra rutas.
-- `config.py`: define la configuracion de Flask y SQLAlchemy.
-- `create_key.py`: genera y reutiliza una clave secreta local.
-- `app/models/usuario.py`: modelo inicial para la tabla `usuarios`.
-- `app/routes/test.py`: ruta de prueba para validar consultas.
-- `database/schema.sql`: script SQL con la estructura propuesta de la base de datos.
+### 📚 Dashboard
+- Estadísticas generales del sistema
+- Promedio general de calificaciones
+- Estudiantes con bajo rendimiento
+- Accesos rápidos a funciones principales
 
-## Problemas comunes
+### 👤 Gestión de Alumnos
+- CRUD completo
+- Filtrado por grupo
+- Visualización de calificaciones
+- Cálculo automático de promedios
 
-### No se encuentra un modulo de Flask o SQLAlchemy
+### 👥 Gestión de Grupos
+- Creación por semestre y turno
+- Vista de alumnos por grupo
+- Estadísticas de desempeño
 
-Instala las dependencias:
+### 📚 Gestión de Materias
+- Catálogo de materias
+- Créditos y horas semanales
+- Descripciones detalladas
+
+### 🐺 Gestión de Docentes
+- Registro de maestros
+- Especialidades
+- Contacto directo
+
+### ⭐ Sistema de Calificaciones
+- Tipos: Parcial, Final, Tarea, Participación
+- Escala 0-10
+- Cálculo automático de promedios
+- Estados (Aprobado/Reprobado)
+
+### 📈 Reportes
+- Reporte por alumno
+- Reporte por grupo
+- Imprimibles en PDF
+
+## API REST
+
+El sistema incluye endpoints JSON para integraciones:
+
+```
+GET  /alumnos/api/listar
+GET  /grupos/api/listar
+GET  /materias/api/listar
+GET  /docentes/api/listar
+GET  /calificaciones/api/listar
+```
+
+## Seguridad
+
+- Contraseñas hasheadas con Werkzeug
+- Sesión con cookies seguras
+- Validaciones server-side
+- Protección contra CSRF (a implementar)
+- Control de acceso por rol
+
+## Problemas Comunes
+
+### Error: "ModuleNotFoundError: No module named 'flask'"
 
 ```bash
 pip install -r requeriments.txt
 ```
 
-### Error de conexion a la base de datos
+### Error: "Error de conexión a base de datos"
 
-Revisa que:
+Verifica:
+1. MySQL está ejecutándose
+2. Credenciales correctas en DATABASE_URL
+3. Base de datos existe
 
-- La URL de conexion sea correcta.
-- La base de datos este disponible.
-- El usuario y la contrasena tengan permisos.
-- Si usas una base remota, la configuracion SSL sea compatible.
+### Error: "Table doesn't exist"
 
-### La ruta `/test` marca error con la tabla `usuarios`
+Ejecuta el schema SQL:
 
-Verifica que la tabla exista y que sus columnas coincidan con el modelo `Usuario` definido en `app/models/usuario.py`.
+```bash
+mysql -u root -p control_escolar < database/schema.sql
+```
 
-## Siguientes pasos sugeridos
+## Roadmap Futuro
 
-- Alinear completamente el modelo `Usuario` con el script `schema.sql`.
-- Implementar los modelos pendientes: alumnos, grupos, materias y planeaciones.
-- Registrar nuevos blueprints para las rutas funcionales.
-- Agregar plantillas HTML para las vistas del sistema.
-- Implementar autenticacion y control de roles.
-- Separar credenciales sensibles mediante variables de entorno.
+- [ ] Exportar reportes a PDF
+- [ ] Autenticación con LDAP
+- [ ] Médulo de asistencia
+- [ ] Notificaciones por email
+- [ ] Sistema de tareas
+- [ ] Calificaciones con rúbrica
+- [ ] API GraphQL
+- [ ] Aplicación móvil
+
+## Contribuir
+
+Las contribuciones son bienvenidas. Por favor:
+
+1. Fork el repositorio
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## Licencia
+
+Este proyecto está licenciado bajo la Licencia MIT - ver el archivo LICENSE para detalles.
 
 ## Autor
 
-Efren Alexander Robles Gomez - 4o I  
-Centro de Bachillerato Tecnologico Industrial y de Servicios No. 246  
-Proyecto escolar: Sistema de Control Academico
+**Efrén Alexander Robles Gómez**  
+Estudiante de 4to I  
+Centro de Bachillerato Tecnológico Industrial y de Servicios No. 246  
+
+## Contacto
+
+- GitHub: [@EfrenAlexander-Robles](https://github.com/EfrenAlexander-Robles)
+- Email: efren.robles@cbtis246.edu.mx
+
+---
+
+**Última actualización:** 27 de Mayo de 2026
